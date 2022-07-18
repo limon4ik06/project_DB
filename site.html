@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Title</title>
+</head>
+<body>
+    <form action="" method="post">
+        <p>Categories:</p>
+        <div>
+            <input type="checkbox" id="contactChoice1" name="category" value="pay">
+            <label for="contactChoice1">pay</label>
+        </div>
+        <div>
+            <input type="checkbox" id="contactChoice2" name="category" value="credit">
+            <label for="contactChoice2">credit</label>
+        </div>
+        <div>
+            <input type="checkbox" id="contactChoice3" name="category" value="transaction">
+            <label for="contactChoice3">transaction</label>
+        </div>
+        <div>
+            <input type="checkbox" id="contactChoice4" name="category" value="kyc">
+            <label for="contactChoice3">kyc</label>
+        </div>
+        <div>
+            <label for="tel">Phone:</label>
+            <input id="tel" type="tel" name="tel" placeholder="phone" pattern="[0-9]{10}">
+        </div>
+        <div>
+            <label for="timeout">timeout:</label>
+            <input id="timeout" type="number" name="timeout" placeholder="timeout">
+        </div>
+        <button id="btn">Send</button>
+    </form>
+</body>
+</html>
