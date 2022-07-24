@@ -20,10 +20,6 @@ class echoHANDLER(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.send_header('Location', self.path)
-            self.end_headers()
             ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
             pdict['boundary'] = bytes(pdict['boundary'], "utf-8")
             content_len = int(self.headers.get('Content-length'))
@@ -39,13 +35,21 @@ class echoHANDLER(BaseHTTPRequestHandler):
                     categories = fields.get('category')
                     key = fields.get('tel')
                     timeout = fields.get('timeout')
-                    add_part(conection, cursor, categories=categories, key=key[0], timeout=timeout[0])
+                    if categories == [''] or key == [''] or timeout == ['']:
+                        return self.send_error(404, "not all parameters were enter")
+                    else:
+                        add_part(conection, cursor, categories=categories, key=key[0], timeout=timeout[0])
+        except:
+            self.send_error(502, "{}".format(sys.exc_info()[0]))
+            print(sys.exc_info())
+        else:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.send_header('Location', self.path)
+            self.end_headers()
             file = open('result.html', 'rb')
             site = file.read()
             self.wfile.write(site)
-        except:
-            self.send_error(404, "{}".format(sys.exc_info()[0]))
-            print(sys.exc_info())
 
     def add_to_DB(self, insert_data):
         header = insert_data[0].split(',')
