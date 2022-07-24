@@ -53,11 +53,19 @@ class echoHANDLER(BaseHTTPRequestHandler):
     def add_to_DB(self, insert_data):
         header = insert_data[0].split(',')
         data = insert_data[1].split(',')
-        data[0] = data[0].split(';')
-        categories = data[header.index('categories')]
-        key = data[header.index('phone')]
-        timeout = data[header.index('timeout')]
-        add_part(conection, cursor, categories=categories, key=key, timeout=timeout)
+        try:
+            insert_data = {header[0]: data[0].split(';'),
+                           header[1]: data[1],
+                           header[2]: data[2]
+                           }
+            add_part(conection,
+                     cursor,
+                     categories=insert_data["categories"],
+                     key=insert_data["phone"],
+                     timeout=insert_data["timeout"],
+                     )
+        except IndexError:
+            self.send_error(404, 'not all parameters were enter')
 
     def _set_response(self):
         self.send_response(200)
