@@ -39,10 +39,6 @@ class echoHANDLER(BaseHTTPRequestHandler):
                         return self.send_error(404, "not all parameters were enter")
                     else:
                         add_part(conection, cursor, categories=categories, key=key[0], timeout=timeout[0])
-        except:
-            self.send_error(502, "{}".format(sys.exc_info()[0]))
-            print(sys.exc_info())
-        else:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.send_header('Location', self.path)
@@ -50,6 +46,9 @@ class echoHANDLER(BaseHTTPRequestHandler):
             file = open('result.html', 'rb')
             site = file.read()
             self.wfile.write(site)
+        except:
+            self.send_error(502, "{}".format(sys.exc_info()[0]))
+            print(sys.exc_info())
 
     def add_to_DB(self, insert_data):
         header = insert_data[0].split(',')
