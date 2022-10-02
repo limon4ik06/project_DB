@@ -29,16 +29,16 @@ class echoHANDLER(BaseHTTPRequestHandler):
                 if self.path.endswith('/sendfile'):
                     insert_data = fields.get('file')
                     insert_data = insert_data[0].decode('utf-8').splitlines()
-                    self.add_to_DB(insert_data)
+                    self.add_to_DB_file(insert_data)
 
                 elif self.path.endswith('/senddata'):
                     categories = fields.get('category')
-                    key = fields.get('tel')
+                    phone_number = fields.get('tel')
                     timeout = fields.get('timeout')
-                    if categories == [''] or key == [''] or timeout == ['']:
+                    if categories == [''] or phone_number == [''] or timeout == ['']:
                         return self.send_error(404, "not all parameters were enter")
                     else:
-                        add_part(conection, cursor, categories=categories, key=key[0], timeout=timeout[0])
+                        add_part(conection, cursor, categories=categories, phone_number=phone_number[0], timeout=timeout[0])
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.send_header('Location', self.path)
@@ -50,7 +50,7 @@ class echoHANDLER(BaseHTTPRequestHandler):
             self.send_error(502, "{}".format(sys.exc_info()[0]))
             print(sys.exc_info())
 
-    def add_to_DB(self, insert_data):
+    def add_to_DB_file(self, insert_data):
         header = insert_data[0].split(',')
         data = insert_data[1].split(',')
         try:
@@ -61,7 +61,7 @@ class echoHANDLER(BaseHTTPRequestHandler):
             add_part(conection,
                      cursor,
                      categories=insert_data["categories"],
-                     key=insert_data["phone"],
+                     phone_number=insert_data["phone"],
                      timeout=insert_data["timeout"],
                      )
         except IndexError:

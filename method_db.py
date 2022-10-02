@@ -1,10 +1,10 @@
 import json
+from wsgiref import validate
 import psycopg2
 import uuid
 from psycopg2 import OperationalError, Error
 from datetime import datetime, timezone
-
-
+import re
 
 def create_connection(db_name, db_user, db_password, db_host, db_port):
     connection = None
@@ -46,7 +46,7 @@ def print_table(cursor, statistics=True):
         print('Ошибка вывода таблицы', error)
 
 
-def add_part(conection, cursor, categories, key, timeout):
+def add_part(conection, cursor, categories, phone_number, timeout):
     try:
         cursor.execute('Select max(id) from cn_requests_hist')
         last_id = cursor.fetchall()
@@ -55,7 +55,14 @@ def add_part(conection, cursor, categories, key, timeout):
         id_status = 4
         requestor_id_peers = 'test'
         categories = json.dumps(categories)
-        key_value = {"key": "phone", "value": key}
+        flag = False
+        checker = re.compile(r'(^[+0-9]{1,3})*([0-9]{10,11}$)')
+        while not flag:
+            if checker.search(phone_number):
+                flag = True
+            else:
+                raise Error('You entered not valid phone number')
+        key_value = {"key": "phone", "value": phone_number}
         key_value = json.dumps(key_value)
         time_now = datetime.now(timezone.utc).astimezone().isoformat()
         data = (new_id, id_request, id_status, categories, key_value, requestor_id_peers, time_now, timeout, time_now)
@@ -63,8 +70,6 @@ def add_part(conection, cursor, categories, key, timeout):
         conection.commit()
     except(Exception, Error) as error:
         print('Ошибка добавления строки в таблицу', error)
-    finally:
-        print('Успешно добавлено')
 
 
 def delete_part(conection, cursor):
